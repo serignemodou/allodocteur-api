@@ -1,4 +1,4 @@
-package medecin
+package caregiver
 
 type Profil struct {
 	ID           string       `json:"id" gorm:"primaryKey"`
@@ -9,7 +9,7 @@ type Profil struct {
 type Speciality struct {
 	ID     string `json:"id" gorm:"primaryKey"`
 	Name   string `json:"name" gorm:"unique;not null"`
-	Profil Profil `json:"profil" gorm:"foreignKey:ProfilID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Profil Profil `json:"profil_id" `
 }
 
 type Caregiver struct {
