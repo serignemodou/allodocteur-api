@@ -26,6 +26,7 @@ func (caregiverPersistance CaregiverPersistance) GetAllProfil() (*[]Profil, erro
 	}
 	return &profil, err
 }
+
 func (caregiverPersistance CaregiverPersistance) GetProfilByUID(uid string) (*Profil, error) {
 	var profil Profil
 	err := caregiverPersistance.DB.Preload("Specialities").Where("id = ?", uid).Find(&profil).Error
@@ -37,6 +38,7 @@ func (caregiverPersistance CaregiverPersistance) GetProfilByUID(uid string) (*Pr
 	}
 	return &profil, nil
 }
+
 func (caregiverPersistance CaregiverPersistance) GetProfilByName(name string) (*Profil, error) {
 	var profil Profil
 	err := caregiverPersistance.DB.Preload("Specialities").Where("name = ?", name).Find(&profil).Error
@@ -48,6 +50,7 @@ func (caregiverPersistance CaregiverPersistance) GetProfilByName(name string) (*
 	}
 	return &profil, nil
 }
+
 func (caregiverPersistance CaregiverPersistance) CreateProfil(profil *Profil) (*Profil, error) {
 	err := caregiverPersistance.DB.Create(profil).Error
 	if err != nil {
@@ -57,4 +60,39 @@ func (caregiverPersistance CaregiverPersistance) CreateProfil(profil *Profil) (*
 		}
 	}
 	return profil, nil
+}
+
+func (caregiverPersistance CaregiverPersistance) GetSpecialityByProfil(profilName string) (*[]Speciality, error) {
+	var specialities *[]Speciality
+	err := caregiverPersistance.DB.Preload("Profil").Where("name = ?", profilName).Error
+	if err != nil {
+		return nil, &errors.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			ErrMessage: err.Error(),
+		}
+	}
+	return specialities, nil
+}
+
+func (caregiverPersistance CaregiverPersistance) GetSpecialityByUID(uid string) (*Speciality, error) {
+	var speciality Speciality
+	err := caregiverPersistance.DB.Preload("Profil").Where("id = ?", uid).Error
+	if err != nil {
+		return nil, &errors.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			ErrMessage: err.Error(),
+		}
+	}
+	return &speciality, nil
+}
+
+func (caregiverPersistance CaregiverPersistance) CreateSpeciality(speciality *Speciality) (*Speciality, error) {
+	err := caregiverPersistance.DB.Create(speciality).Error
+	if err != nil {
+		return nil, &errors.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			ErrMessage: err.Error(),
+		}
+	}
+	return speciality, nil
 }
